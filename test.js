@@ -1,0 +1,10 @@
+const RSA = require('./public/rsa.js');
+let t = Date.now();
+const { publicKey, privateKey } = RSA.generateKeyPair(1024);
+console.log('Keygen 1024 bit:', Date.now() - t, 'ms');
+const msg = 'Dok, sejak 3 hari saya demam dan batuk 🤒. ' + 'Apakah perlu ke rumah sakit? '.repeat(12);
+const c1 = RSA.encrypt(msg, publicKey), c2 = RSA.encrypt(msg, publicKey);
+console.log('Jumlah blok:', c1.length, '| ciphertext acak (c1 != c2):', c1[0] !== c2[0]);
+console.log('Dekripsi benar:', RSA.decrypt(c1, privateKey) === msg);
+console.log('Pesan kosong:', RSA.decrypt(RSA.encrypt('', publicKey), privateKey) === '');
+console.log('Miller-Rabin:', RSA.isPrime(104729n), !RSA.isPrime(104731n * 3n));

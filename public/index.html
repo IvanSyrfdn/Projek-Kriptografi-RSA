@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SecureConsult</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="card">
+    <h1>SecureConsult</h1>
+    <p class="muted">Konsultasi dokter online dengan enkripsi RSA.</p>
+    <div class="tabs"><button id="tab-login" class="active">Masuk</button><button id="tab-register">Daftar</button></div>
+
+    <form id="form-login">
+      <input name="email" type="email" placeholder="Email" required>
+      <input name="password" type="password" placeholder="Password" required>
+      <label class="muted small" id="import-wrap" hidden>Kunci privat tidak ditemukan di browser ini. Impor file kunci:
+        <input id="import-key" type="file" accept=".json"></label>
+      <button type="submit">Masuk</button>
+    </form>
+
+    <form id="form-register" hidden>
+      <input name="name" placeholder="Nama lengkap" required>
+      <input name="email" type="email" placeholder="Email" required>
+      <input name="password" type="password" placeholder="Password (min. 8 karakter)" minlength="8" required>
+      <select name="role"><option value="patient">Pasien</option><option value="doctor">Dokter</option></select>
+      <input name="specialty" placeholder="Spesialisasi (khusus dokter)" hidden>
+      <button type="submit">Daftar &amp; buat kunci RSA</button>
+    </form>
+    <p id="status" class="muted small"></p>
+    
+    <div id="backup" hidden>
+  <h2>Simpan kunci privat kamu</h2>
+  <p class="muted">Kunci ini hanya ada di browser ini dan tidak bisa dipulihkan jika hilang.
+     Unduh dan simpan filenya sebelum melanjutkan.</p>
+  <button id="btn-download" type="button">Unduh kunci privat</button>
+  <button id="btn-continue" type="button" disabled>Lanjut ke dashboard</button>
+</div>
+  </main>
+  <script src="js/api.js"></script>
+  <script src="js/keystore.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

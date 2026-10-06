@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard - SecureConsult</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="card">
+    <h1>Dashboard</h1>
+    <p id="who"></p>
+    <p class="muted small">Kunci publik (n, awal): <code id="pub"></code></p>
+    <p class="muted">Daftar dokter dan chat terenkripsi dibuat di langkah berikutnya.</p>
+    <button id="logout">Keluar</button>
+  </main>
+  <script src="js/api.js"></script>
+  <script>
+    API.call('/auth/me').then(({ user }) => {
+      document.querySelector('#who').textContent = `${user.name} (${user.role === 'doctor' ? 'Dokter' : 'Pasien'})`;
+      document.querySelector('#pub').textContent = user.publicKey.n.slice(0, 32) + '…';
+    }).catch(() => (location.href = 'index.html'));
+    document.querySelector('#logout').onclick = async () => {
+      try { await API.call('/auth/logout', 'POST'); } catch (e) {}
+      localStorage.removeItem('sc_token'); location.href = 'index.html';
+    };
+  </script>
+</body>
+</html>
