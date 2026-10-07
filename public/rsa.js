@@ -118,6 +118,6 @@
     return new TextDecoder().decode(out);
   }
 
-  const RSA = { generateKeyPair, encrypt, decrypt, isPrime, generatePrime, modPow, modInv, egcd };
+  const RSA = { generateKeyPair, encrypt, decrypt, isPrime, generatePrime, modPow, modInv, egcd, pad, unpad, bytesToBig, bigToBytes };
   if (typeof module !== 'undefined' && module.exports) module.exports = RSA; else root.RSA = RSA;
 })(typeof self !== 'undefined' ? self : this);

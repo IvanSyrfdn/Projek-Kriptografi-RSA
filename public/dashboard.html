@@ -7,20 +7,58 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <main class="card">
+  <main class="card wide">
     <h1>Dashboard</h1>
     <p id="who"></p>
     <p class="muted small">Kunci publik (n, awal): <code id="pub"></code></p>
-    <p class="muted">Daftar dokter dan chat terenkripsi dibuat di langkah berikutnya.</p>
+    <p><a href="demo.html">Demo kripto RSA</a></p>
+
+    <section id="doctors-section" hidden>
+      <h2>Daftar dokter</h2>
+      <ul id="doctors" class="list"></ul>
+    </section>
+
+    <section>
+      <h2>Konsultasi saya</h2>
+      <ul id="consultations" class="list"></ul>
+    </section>
+
     <button id="logout">Keluar</button>
   </main>
   <script src="js/api.js"></script>
   <script>
-    API.call('/auth/me').then(({ user }) => {
-      document.querySelector('#who').textContent = `${user.name} (${user.role === 'doctor' ? 'Dokter' : 'Pasien'})`;
-      document.querySelector('#pub').textContent = user.publicKey.n.slice(0, 32) + '…';
-    }).catch(() => (location.href = 'index.html'));
-    document.querySelector('#logout').onclick = async () => {
+    const $ = (s) => document.querySelector(s);
+
+    function addRow(ul, text, btnText, onClick) {
+      const li = document.createElement('li');
+      const span = document.createElement('span'); span.textContent = text;
+      const b = document.createElement('button'); b.textContent = btnText; b.onclick = onClick;
+      li.append(span, b); ul.append(li);
+    }
+
+    async function init() {
+      const { user } = await API.call('/auth/me');
+      $('#who').textContent = `${user.name} (${user.role === 'doctor' ? 'Dokter' : 'Pasien'})`;
+      $('#pub').textContent = user.publicKey.n.slice(0, 32) + '…';
+
+      if (user.role === 'patient') {
+        $('#doctors-section').hidden = false;
+        const { doctors } = await API.call('/doctors');
+        if (!doctors.length) $('#doctors').textContent = 'Belum ada dokter terdaftar.';
+        doctors.forEach((d) => addRow($('#doctors'), `${d.name} - ${d.specialty}`, 'Konsultasi', async () => {
+          const { id } = await API.call('/consultations', 'POST', { doctorId: d.id });
+          location.href = 'chat.html?id=' + id;
+        }));
+      }
+
+      const { consultations } = await API.call('/consultations');
+      if (!consultations.length) $('#consultations').textContent = 'Belum ada konsultasi.';
+      consultations.forEach((c) => addRow($('#consultations'), `#${c.id} dengan ${c.other_name}`, 'Buka chat',
+        () => (location.href = 'chat.html?id=' + c.id)));
+    }
+    init().catch(() => (location.href = 'index.html'));
+
+    $('#logout').onclick = async () => {
       try { await API.call('/auth/logout', 'POST'); } catch (e) {}
       localStorage.removeItem('sc_token'); location.href = 'index.html';
     };

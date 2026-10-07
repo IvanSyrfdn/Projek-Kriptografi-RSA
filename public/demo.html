@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demo RSA - SecureConsult</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="card wide">
+    <p><a href="index.html">&larr; Beranda</a></p>
+    <h1>Demo RSA</h1>
+    <p class="muted">Semua perhitungan memakai modul <code>rsa.js</code> buatan sendiri dan berjalan di browser.</p>
+
+    <h2>Langkah 1: Buat kunci</h2>
+    <form id="form-gen" onsubmit="return false">
+      <select id="bits">
+        <option value="256">256 bit (cepat, mudah dibaca)</option>
+        <option value="512">512 bit</option>
+        <option value="1024" selected>1024 bit</option>
+      </select>
+      <button id="gen" type="button">Bangkitkan kunci</button>
+    </form>
+    <div id="out"></div>
+
+    <div id="step2" hidden>
+      <h2>Langkah 2: Enkripsi dan dekripsi</h2>
+      <form id="form-enc" onsubmit="return false">
+        <input id="plain" value="Dok, saya demam sejak 3 hari" autocomplete="off">
+        <button id="enc" type="button">Enkripsi &amp; dekripsi</button>
+      </form>
+      <div id="out2"></div>
+    </div>
+  </main>
+  <script src="rsa.js"></script>
+  <script src="js/demo.js"></script>
+</body>
+</html>

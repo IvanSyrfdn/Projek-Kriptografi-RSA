@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chat - SecureConsult</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="card wide">
+    <p><a href="dashboard.html">&larr; Kembali</a></p>
+    <h1 id="title">Chat</h1>
+    <label class="muted small"><input type="checkbox" id="toggle-cipher"> Tampilkan ciphertext RSA</label>
+    <div id="messages"></div>
+    <form id="form-send">
+      <input id="text" placeholder="Tulis pesan…" autocomplete="off" required>
+      <button type="submit">Kirim</button>
+    </form>
+    <p id="status" class="muted small"></p>
+  </main>
+  <script src="rsa.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/keystore.js"></script>
+  <script src="js/chat.js"></script>
+</body>
+</html>
