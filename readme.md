@@ -96,8 +96,8 @@ Proyek ini untuk tujuan edukasi, bukan produksi.
 - [ ] Resep digital bertanda tangan dokter
 
 ## Pembuat
-___________________________
-|Hansen Chang | 5027241028|
-|Ivan Syarifuddin | 5027241045|
-|Hafiz Ramadhan | 5027241096 |
-______________________________
+| Nama                        | NRP        |
+| --------------------------- | ---------- |
+| Hansen Chang                | 5027241028 |
+| Ivan Syarifuddin            | 5027241045 |
+| Hafiz Ramadhan              | 5027241096 |
