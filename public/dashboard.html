@@ -3,15 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard - SecureConsult</title>
+  <title>Dashboard - halodawg</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <header class="top">
+    <a class="brand" href="dashboard.html">halo<span>dawg</span></a>
+    <nav>
+      <a href="demo.html">Demo RSA</a>
+      <button id="logout" class="ghost">Keluar</button>
+    </nav>
+  </header>
+
   <main class="card wide">
     <h1>Dashboard</h1>
     <p id="who"></p>
     <p class="muted small">Kunci publik (n, awal): <code id="pub"></code></p>
-    <p><a href="demo.html">Demo kripto RSA</a></p>
 
     <section id="doctors-section" hidden>
       <h2>Daftar dokter</h2>
@@ -22,9 +29,8 @@
       <h2>Konsultasi saya</h2>
       <ul id="consultations" class="list"></ul>
     </section>
-
-    <button id="logout">Keluar</button>
   </main>
+
   <script src="js/api.js"></script>
   <script>
     const $ = (s) => document.querySelector(s);

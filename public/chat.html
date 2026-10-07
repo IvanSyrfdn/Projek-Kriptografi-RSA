@@ -3,12 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Chat - SecureConsult</title>
+  <title>Chat - halodawg</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <header class="top">
+    <a class="brand" href="dashboard.html">halo<span>dawg</span></a>
+    <nav><a href="dashboard.html">&larr; Dashboard</a></nav>
+  </header>
+
   <main class="card wide">
-    <p><a href="dashboard.html">&larr; Kembali</a></p>
     <h1 id="title">Chat</h1>
     <label class="muted small"><input type="checkbox" id="toggle-cipher"> Tampilkan ciphertext RSA</label>
     <div id="messages"></div>
@@ -18,6 +22,7 @@
     </form>
     <p id="status" class="muted small"></p>
   </main>
+
   <script src="sha256.js"></script>
   <script src="rsa.js"></script>
   <script src="js/api.js"></script>

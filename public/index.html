@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SecureConsult</title>
+  <title>halodawg</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <main class="card">
-    <h1>SecureConsult</h1>
-    <p class="muted">Konsultasi dokter online dengan enkripsi RSA.</p>
+    <h1 class="brand">halo<span>dawg</span></h1>
+    <p class="muted">Konsultasi dokter online dengan pesan terenkripsi RSA.</p>
+
     <div class="tabs"><button id="tab-login" class="active">Masuk</button><button id="tab-register">Daftar</button></div>
 
     <form id="form-login">
@@ -28,15 +29,19 @@
       <input name="specialty" placeholder="Spesialisasi (khusus dokter)" hidden>
       <button type="submit">Daftar &amp; buat kunci RSA</button>
     </form>
-    <p id="status" class="muted small"></p>
-    
+
     <div id="backup" hidden>
-  <h2>Simpan kunci privat kamu</h2>
-  <p class="muted">Kunci ini hanya ada di browser ini dan tidak bisa dipulihkan jika hilang.
-     Unduh dan simpan filenya sebelum melanjutkan.</p>
-  <button id="btn-download" type="button">Unduh kunci privat</button>
-  <button id="btn-continue" type="button" disabled>Lanjut ke dashboard</button>
-</div>
+      <h2>Simpan kunci privat kamu</h2>
+      <p class="muted">Kunci ini hanya ada di browser ini dan tidak bisa dipulihkan jika hilang.
+         Unduh dan simpan filenya sebelum melanjutkan.</p>
+      <form onsubmit="return false">
+        <button id="btn-download" type="button">Unduh kunci privat</button>
+        <button id="btn-continue" type="button" disabled>Lanjut ke dashboard</button>
+      </form>
+    </div>
+
+    <p id="status" class="muted small"></p>
+    <p class="small"><a href="demo.html">Lihat demo RSA</a></p>
   </main>
   <script src="js/api.js"></script>
   <script src="js/keystore.js"></script>
