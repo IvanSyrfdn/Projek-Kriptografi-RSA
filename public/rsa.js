@@ -118,6 +118,37 @@
     return new TextDecoder().decode(out);
   }
 
-  const RSA = { generateKeyPair, encrypt, decrypt, isPrime, generatePrime, modPow, modInv, egcd, pad, unpad, bytesToBig, bigToBytes };
+    // ---------- Tanda tangan digital (hash SHA-256 buatan sendiri + RSA) ----------
+  const sha = () => ((typeof module !== 'undefined' && module.exports) ? require('./sha256.js') : root.SHA256);
+  // Awalan DigestInfo SHA-256 (ASN.1), sama seperti PKCS#1 v1.5
+  const DIGEST_PREFIX = Uint8Array.from([0x30,0x31,0x30,0x0d,0x06,0x09,0x60,0x86,0x48,0x01,0x65,0x03,0x04,0x02,0x01,0x05,0x00,0x04,0x20]);
+
+  // Blok yang ditandatangani: 00 01 FF..FF 00 [DigestInfo || hash]
+  function encodeForSign(text, k) {
+    const hash = sha().sha256(new TextEncoder().encode(text));
+    const t = new Uint8Array(DIGEST_PREFIX.length + hash.length); t.set(DIGEST_PREFIX); t.set(hash, DIGEST_PREFIX.length);
+    if (k < t.length + 11) throw new Error('Kunci terlalu pendek untuk tanda tangan');
+    const em = new Uint8Array(k).fill(0xff);
+    em[0] = 0; em[1] = 1; em[k - t.length - 1] = 0; em.set(t, k - t.length);
+    return em;
+  }
+  function sign(text, privateKey) { // s = EM^d mod n
+    const n = fromHex(privateKey.n), d = fromHex(privateKey.d), k = keyBytes(privateKey.n);
+    return toHex(modPow(bytesToBig(encodeForSign(text, k)), d, n)).padStart(k * 2, '0');
+  }
+  function verify(text, signatureHex, publicKey) { // EM' = s^e mod n, bandingkan dengan EM hasil hash ulang
+    try {
+      const n = fromHex(publicKey.n), e = fromHex(publicKey.e), k = keyBytes(publicKey.n);
+      const s = fromHex(signatureHex);
+      if (s >= n) return false;
+      const got = bigToBytes(modPow(s, e, n), k), want = encodeForSign(text, k);
+      let diff = 0; for (let i = 0; i < k; i++) diff |= got[i] ^ want[i];
+      return diff === 0;
+    } catch (err) { return false; }
+  }
+
+  const RSA = { generateKeyPair, encrypt, decrypt, sign, verify, isPrime, generatePrime, modPow, modInv, egcd,
+                pad, unpad, bytesToBig, bigToBytes };
+  
   if (typeof module !== 'undefined' && module.exports) module.exports = RSA; else root.RSA = RSA;
 })(typeof self !== 'undefined' ? self : this);

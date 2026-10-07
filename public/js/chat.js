@@ -23,15 +23,22 @@ async function poll() {
 function render(m) {
   const mine = m.sender_id === me.id;
   const blocks = mine ? m.ciphertext.forSender : m.ciphertext.forRecipient;
-  let text;
+  let text, valid = false;
   try { text = RSA.decrypt(blocks, priv); } catch (e) { text = '[gagal didekripsi]'; }
+
+  const signerKey = mine ? me.publicKey : other.publicKey; // kunci publik pengirim
+  const badge = document.createElement('small'); badge.className = 'badge';
+  if (!m.signature) badge.textContent = 'tanpa tanda tangan';
+  else if (RSA.verify(text, m.signature, signerKey)) { badge.textContent = '✓ tanda tangan valid'; valid = true; }
+  else badge.textContent = '⚠ tanda tangan TIDAK valid';
+  if (m.signature && !valid) badge.classList.add('bad');
 
   const div = document.createElement('div');
   div.className = 'msg' + (mine ? ' mine' : '');
   const p = document.createElement('div'); p.textContent = text;
   const c = document.createElement('small'); c.className = 'cipher';
   c.textContent = `${blocks.length} blok · ${blocks[0].slice(0, 48)}…`;
-  div.append(p, c);
+  div.append(p, badge, c);
   $('#messages').append(div);
 }
 
@@ -40,11 +47,12 @@ $('#form-send').onsubmit = async (e) => {
   const text = $('#text').value.trim();
   if (!text) return;
   try {
-    const ciphertext = {
-      forRecipient: RSA.encrypt(text, other.publicKey), // hanya lawan bicara yang bisa membuka
-      forSender: RSA.encrypt(text, me.publicKey),       // supaya pengirim bisa membaca riwayatnya
+      const ciphertext = {
+      forRecipient: RSA.encrypt(text, other.publicKey),
+      forSender: RSA.encrypt(text, me.publicKey),
     };
-    await API.call(`/consultations/${cid}/messages`, 'POST', { ciphertext });
+    const signature = RSA.sign(text, priv); // ditandatangani dengan kunci privat pengirim
+    await API.call(`/consultations/${cid}/messages`, 'POST', { ciphertext, signature });
     $('#text').value = '';
     await poll();
   } catch (err) { status(err.message); }

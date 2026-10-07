@@ -53,8 +53,8 @@ router.get('/:id', (req, res) => {
 // Ambil pesan (hanya ciphertext), opsional ?after=<id terakhir>
 router.get('/:id/messages', (req, res) => {
   const c = getConsultation(req, res); if (!c) return;
-  const rows = db.prepare('SELECT id, sender_id, ciphertext, created_at FROM messages WHERE consultation_id = ? AND id > ? ORDER BY id')
-    .all(c.id, Number(req.query.after) || 0);
+  const rows = db.prepare('SELECT id, sender_id, ciphertext, signature, created_at FROM messages WHERE consultation_id = ? AND id > ? ORDER BY id')
+  .all(c.id, Number(req.query.after) || 0);
   res.json({ messages: rows.map((m) => ({ ...m, ciphertext: JSON.parse(m.ciphertext) })) });
 });
 
@@ -62,10 +62,13 @@ router.get('/:id/messages', (req, res) => {
 router.post('/:id/messages', (req, res) => {
   const c = getConsultation(req, res); if (!c) return;
   const ct = req.body && req.body.ciphertext;
+  const signature = req.body && req.body.signature;
   if (!ct || !validBlocks(ct.forRecipient) || !validBlocks(ct.forSender))
     return res.status(400).json({ error: 'Format ciphertext tidak valid' });
-  const info = db.prepare('INSERT INTO messages (consultation_id, sender_id, ciphertext) VALUES (?, ?, ?)')
-    .run(c.id, req.user.id, JSON.stringify({ forRecipient: ct.forRecipient, forSender: ct.forSender }));
+  if (signature != null && (!isHex(signature) || signature.length > 1024))
+    return res.status(400).json({ error: 'Format tanda tangan tidak valid' });
+  const info = db.prepare('INSERT INTO messages (consultation_id, sender_id, ciphertext, signature) VALUES (?, ?, ?, ?)')
+    .run(c.id, req.user.id, JSON.stringify({ forRecipient: ct.forRecipient, forSender: ct.forSender }), signature || null);
   res.json({ id: info.lastInsertRowid });
 });
 

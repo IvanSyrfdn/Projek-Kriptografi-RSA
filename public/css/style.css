@@ -26,3 +26,6 @@ button:disabled { opacity: .6; cursor: wait; }
 .row { display: flex; flex-direction: column; gap: .15rem; padding: .4rem 0; border-bottom: 1px solid color-mix(in srgb, var(--fg) 12%, transparent); }
 .row code { font-size: .8rem; }
 h2, h3 { margin-bottom: .3rem; }
+.badge { display: block; font-size: .72rem; opacity: .85; margin-top: .25rem; }
+.badge.bad { color: #ff6b6b; font-weight: 700; opacity: 1; }
+.msg.mine .badge.bad { color: #ffe0e0; }
